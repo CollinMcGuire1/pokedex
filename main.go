@@ -1,12 +1,14 @@
 package main
 
+// FINISH REFACTORING SO THAT COMMAND_EXIT, COMMAND_HELP, REPL.GO ARE IN THEIR OWN FILES AND MAIN.GO JUST CONFIGS CFG AND CALLS STARTREPL(CFG)
+
 import (
 	"bufio"
 	"fmt"
 	"os"
 )
 
-func main() {
+func main(cfg *config) {
 	scanner := bufio.NewScanner(os.Stdin)
 	getCommands()
 
@@ -20,12 +22,13 @@ func main() {
 			continue
 		}
 		firstWord := cleanedInputSlice[0]
-		command, ok := commands[firstWord]
-		if ok {
-			result := command.callback()
-			if result != nil {
-				fmt.Println(result)
+		command, exists := cfg.commands[firstWord]
+		if exists {
+			err := command.callback(cfg)
+			if err != nil {
+				fmt.Println(err)
 			}
+			continue
 		} else {
 			fmt.Println("Unknown command")
 		}
@@ -51,16 +54,16 @@ func getCommands() {
 	}
 }
 
-func commandExit() error {
+func commandExit(cfg *config) error {
 	fmt.Println("Closing the Pokedex... Goodbye!")
 	os.Exit(0)
 	return nil
 }
 
-func commandHelp() error {
+func commandHelp(cfg *config) error {
 	fmt.Println("\nWelcome to the Pokedex! Use CTRL+C to quit!\n\n\nUsage:")
 	fmt.Println()
-	for _, command := range commands {
+	for _, command := range config.commands {
 		fmt.Printf("%s: %s\n", command.name, command.description)
 	}
 	fmt.Println()
@@ -72,5 +75,9 @@ func commandHelp() error {
 type cliCommand struct {
 	name        string
 	description string
-	callback    func() error
+	callback    func(*config) error
+}
+
+type config struct {
+	commands map[string]cliCommand
 }
