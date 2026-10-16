@@ -5,14 +5,20 @@ import (
 	"fmt"
 	"os"
 	"strings"
+
+	"github.com/collinmcguire1/pokedex/internal/pokeapi"
 )
 
 type config struct {
-	commands map[string]cliCommand
+	commands         map[string]cliCommand
+	pokeapiClient    pokeapi.Client
+	nextLocationsURL *string
+	prevLocationsURL *string
 }
 
 func startRepl(cfg *config) {
 	reader := bufio.NewScanner(os.Stdin)
+	fmt.Println("Press Ctrl + Z to quit!")
 
 	for {
 		fmt.Print("Pokedex > ")
@@ -35,6 +41,7 @@ func startRepl(cfg *config) {
 			if err != nil {
 				fmt.Println(err)
 			}
+			fmt.Println("------------------------")
 			continue
 		} else {
 			fmt.Println("Unknown command")
@@ -67,6 +74,16 @@ func getCommands() map[string]cliCommand {
 			name:        "help",
 			description: "Displays a (hopefully) helpful help message (this one!)",
 			callback:    commandHelp,
+		},
+		"map": {
+			name:        "map",
+			description: "Show the name of 20 areas. Each subsequent call of 'map' goes to the next 20.",
+			callback:    commandMapf,
+		},
+		"mapb": {
+			name:        "mapb",
+			description: "'Map-Back' -- Show the previous 20 areas.",
+			callback:    commandMapb,
 		},
 	}
 }

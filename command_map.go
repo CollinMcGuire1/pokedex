@@ -1,9 +1,40 @@
 package main
 
-//	TODO: 	add the 'map' funcionality to scroll to the next list of (20) locations
-// 			add 'mapb' to scroll backwards one list-of-(20)-locations, as well as
-//				adding aliases, like 'mapBack', 'mapback', etc
+import (
+	"errors"
+	"fmt"
+)
 
-func commandMap(cfg *config) error {
+func commandMapf(cfg *config) error {
+	locationsResponse, err := cfg.pokeapiClient.ListLocations(cfg.nextLocationsURL)
+	if err != nil {
+		return err
+	}
 
+	cfg.nextLocationsURL = locationsResponse.Next
+	cfg.prevLocationsURL = locationsResponse.Previous
+
+	for _, loc := range locationsResponse.Results {
+		fmt.Println(loc.Name)
+	}
+	return nil
+}
+
+func commandMapb(cfg *config) error {
+	if cfg.prevLocationsURL == nil {
+		return errors.New("You're on the first page already")
+	}
+
+	locationsResponse, err := cfg.pokeapiClient.ListLocations(cfg.prevLocationsURL)
+	if err != nil {
+		return err
+	}
+
+	cfg.nextLocationsURL = locationsResponse.Next
+	cfg.prevLocationsURL = locationsResponse.Previous
+
+	for _, loc := range locationsResponse.Results {
+		fmt.Println(loc.Name)
+	}
+	return nil
 }
