@@ -8,7 +8,8 @@ package main
 // 				- missing key test for Get()
 // 				- Add()ing the same key twice - should it overwrite, or give an error, etc.
 // 				- Check that old entries are properly being reaped while new entries remain
-// 				- concurrent access: Multiple goroutines call Add and Get while reaping runs. Run go test -race ./... to detect data races.
+// 				- concurrent access: Multiple goroutines call Add and Get while reaping runs.
+// 					Run go test -race ./... to detect data races.
 
 import (
 	"time"

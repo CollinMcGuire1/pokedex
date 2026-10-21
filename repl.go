@@ -45,9 +45,14 @@ func startRepl(cfg *config) {
 			fmt.Println("Oops! An empty string was input. Try typing something before hitting 'enter' to avoid running into a panic crash in a less fool-proof program!")
 			continue
 		}
-		command, exists := cfg.commands[words[0]]
+		commandName := words[0]
+		args := []string{}
+		if len(words) > 1 {
+			args = words[1:]
+		}
+		command, exists := cfg.commands[commandName]
 		if exists {
-			err := command.callback(cfg)
+			err := command.callback(cfg, args...)
 			if err != nil {
 				fmt.Println(err)
 			}
@@ -70,7 +75,7 @@ func cleanInput(text string) []string {
 type cliCommand struct {
 	name        string
 	description string
-	callback    func(*config) error
+	callback    func(*config, ...string) error
 }
 
 func getCommands() map[string]cliCommand {
@@ -94,6 +99,11 @@ func getCommands() map[string]cliCommand {
 			name:        "mapb",
 			description: "'Map-Back' -- Show the previous 20 areas.",
 			callback:    commandMapb,
+		},
+		"explore": {
+			name:        "explore <location_name>",
+			description: "Show what pokemon are found in an input location",
+			callback:    commandExplore,
 		},
 	}
 }
