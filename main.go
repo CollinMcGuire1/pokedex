@@ -4,6 +4,12 @@ package main
 //			add aliases, like 'mapBack', etc
 //			add case-insensitivity for commands
 
+// 			add more tests for pokecache_test;
+// 				- missing key test for Get()
+// 				- Add()ing the same key twice - should it overwrite, or give an error, etc.
+// 				- Check that old entries are properly being reaped while new entries remain
+// 				- concurrent access: Multiple goroutines call Add and Get while reaping runs. Run go test -race ./... to detect data races.
+
 import (
 	"time"
 
