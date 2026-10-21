@@ -17,22 +17,32 @@ type config struct {
 }
 
 func startRepl(cfg *config) {
-	reader := bufio.NewScanner(os.Stdin)
-	fmt.Println("Press Ctrl + Z to quit!")
+	info, err := os.Stdin.Stat()
+	if err != nil {
+		fmt.Println("Error checking stdin:", err)
+		return
+	}
+	piped := info.Mode()&os.ModeCharDevice == 0
+
+	scanner := bufio.NewScanner(os.Stdin)
+	fmt.Println("Type exit to quit!")
 
 	for {
 		fmt.Print("Pokedex > ")
 
-		if !reader.Scan() {
-			if err := reader.Err(); err != nil {
+		if !scanner.Scan() {
+			if err := scanner.Err(); err != nil {
 				fmt.Println("Error reading input:", err)
 			}
 			return
 		}
-		input := reader.Text()
+		input := scanner.Text()
+		if piped {
+			fmt.Println(input)
+		}
 		words := cleanInput(input)
 		if len(words) == 0 {
-			fmt.Println("Oops! An empty string was input. Try typing something before hitting 'enter' to avoid running into a panic crash!")
+			fmt.Println("Oops! An empty string was input. Try typing something before hitting 'enter' to avoid running into a panic crash in a less fool-proof program!")
 			continue
 		}
 		command, exists := cfg.commands[words[0]]
