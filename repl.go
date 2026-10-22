@@ -14,6 +14,7 @@ type config struct {
 	pokeapiClient    pokeapi.Client
 	nextLocationsURL *string
 	prevLocationsURL *string
+	caughtPokemon    map[string]pokeapi.Pokemon
 }
 
 func startRepl(cfg *config) {
@@ -56,7 +57,7 @@ func startRepl(cfg *config) {
 			if err != nil {
 				fmt.Println(err)
 			}
-			fmt.Println("------------------------")
+			fmt.Println("- - - - - - - - - - - - - - - - - - - - - - - -")
 			continue
 		} else {
 			fmt.Println("Unknown command")
@@ -79,6 +80,17 @@ type cliCommand struct {
 }
 
 func getCommands() map[string]cliCommand {
+	mapCommandf := cliCommand{
+		name:        "map, mapf, mapforward",
+		description: "Show the name of 20 areas. Each subsequent call of 'map' goes to the next 20.",
+		callback:    commandMapf,
+	}
+
+	mapCommandb := cliCommand{
+		name:        "mapb, mapback",
+		description: "'Map Back'. Show the previous 20 areas.",
+		callback:    commandMapb,
+	}
 	return map[string]cliCommand{
 		"exit": {
 			name:        "exit",
@@ -90,20 +102,27 @@ func getCommands() map[string]cliCommand {
 			description: "Displays a (hopefully) helpful help message (this one!)",
 			callback:    commandHelp,
 		},
-		"map": {
-			name:        "map",
-			description: "Show the name of 20 areas. Each subsequent call of 'map' goes to the next 20.",
-			callback:    commandMapf,
-		},
-		"mapb": {
-			name:        "mapb",
-			description: "'Map-Back' -- Show the previous 20 areas.",
-			callback:    commandMapb,
-		},
+
+		"map":        mapCommandf,
+		"mapf":       mapCommandf,
+		"mapforward": mapCommandf,
+		"mapb":       mapCommandb,
+		"mapback":    mapCommandb,
+
 		"explore": {
 			name:        "explore <location_name>",
 			description: "Show what pokemon are found in an input location",
 			callback:    commandExplore,
+		},
+		"catch": {
+			name:        "catch <pokemon>",
+			description: "Try to catch a pokemon",
+			callback:    commandCatch,
+		},
+		"inspect": {
+			name:        "inspect <pokemon>",
+			description: "Show stats about a pokemon in your pokedex",
+			callback:    commandInspect,
 		},
 	}
 }

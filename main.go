@@ -1,8 +1,6 @@
 package main
 
 //	TODO:
-//			add aliases, like 'mapBack', etc
-//			add case-insensitivity for commands
 
 // 			add more tests for pokecache_test;
 // 				- missing key test for Get()
@@ -11,6 +9,11 @@ package main
 // 				- concurrent access: Multiple goroutines call Add and Get while reaping runs.
 // 					Run go test -race ./... to detect data races.
 
+//			in command_catch.go, add a line below 'fmt.Printf("%s was caught!", pokemon.Name)'
+//				which checks if it is in the pokedex already, and print a new line if it is not,
+//				which informs the user that this new pokemon is being added.
+// 			also modify catch calc to use species CaptureRate rather than pokemon baseXP
+
 import (
 	"time"
 
@@ -18,10 +21,11 @@ import (
 )
 
 func main() {
-	pokeClient := pokeapi.NewClient(5*time.Second, time.Minute*5)
+	pokeClient := pokeapi.NewClient(5*time.Second, 5*time.Minute)
 	cfg := &config{
 		commands:      getCommands(),
 		pokeapiClient: pokeClient,
+		caughtPokemon: map[string]pokeapi.Pokemon{},
 	}
 	startRepl(cfg)
 }
