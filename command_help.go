@@ -4,7 +4,7 @@ import "fmt"
 
 func commandHelp(cfg *config, args ...string) error {
 	fmt.Println()
-	fmt.Println("Welcome to the Pokedex! Use CTRL+C to quit!")
+	fmt.Println("Welcome to the Pokedex! Type 'exit' to ......... uh...")
 	fmt.Println()
 	fmt.Println()
 	fmt.Println()

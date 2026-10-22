@@ -19,8 +19,7 @@ func commandCatch(cfg *config, args ...string) error {
 	}
 
 	pokeName := capitalize(pokemon.Name)
-	//DEBUG LINE	fmt.Printf("%s", pokemon.BaseExperience)
-	res := rand.Intn(pokemon.BaseExperience)
+	res := rand.Intn(pokemon.BaseExperience / 10) // /10 to make catching 10X more likely during testing
 
 	fmt.Printf("Throwing a Pokeball at %s...\n", pokeName)
 	if res > 40 {
@@ -33,11 +32,4 @@ func commandCatch(cfg *config, args ...string) error {
 
 	cfg.caughtPokemon[pokemon.Name] = pokemon
 	return nil
-}
-
-func capitalize(pokemonName string) string {
-	if pokemonName == "" {
-		return pokemonName
-	}
-	return strings.ToUpper(pokemonName[:1]) + pokemonName[1:]
 }

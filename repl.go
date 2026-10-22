@@ -26,7 +26,10 @@ func startRepl(cfg *config) {
 	piped := info.Mode()&os.ModeCharDevice == 0
 
 	scanner := bufio.NewScanner(os.Stdin)
-	fmt.Println("Type exit to quit!")
+	fmt.Println("Welcome to the Pokedex!")
+	fmt.Println("Type 'help' for.... well...")
+	fmt.Println("Type 'exit' to quit!")
+	fmt.Println("- - - - - - - - - - - - - - - - - - - - - -")
 
 	for {
 		fmt.Print("Pokedex > ")
@@ -71,6 +74,13 @@ func cleanInput(text string) []string {
 	words := strings.Fields(output)
 
 	return words
+}
+
+func capitalize(s string) string {
+	if s == "" {
+		return s
+	}
+	return strings.ToUpper(s[:1]) + s[1:]
 }
 
 type cliCommand struct {
