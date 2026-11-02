@@ -9,13 +9,16 @@ package main
 // 				- concurrent access: Multiple goroutines call Add and Get while reaping runs.
 // 					Run go test -race ./... to detect data races.
 
-//			put error checks for invalid locations, pokemon, etc. ex 'explore rock' should 
+//			put error checks for invalid locations, pokemon, etc. ex 'explore rock' should
 // 				immediately return with 'location not found'
 
-//			in command_catch.go, add a line below 'fmt.Printf("%s was caught!", pokemon.Name)'
-//				which checks if it is in the pokedex already, and print a new line if it is not,
-//				which informs the user that this new pokemon is being added.
-// 			also modify catch calc to use species CaptureRate rather than pokemon baseXP
+// 			in command_catch.go modify catch calc to use species CaptureRate rather than pokemon baseXP
+
+//			FROM FINAL LESSON OF UNIT:
+//			save pokedex to disk so that a user can keep progress between sessions
+//			add party system and exp to level up, evolve
+//			improve map/mapb to allow 'left' 'right' etc.
+//			different types of catching balls
 
 import (
 	"time"
