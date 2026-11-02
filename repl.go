@@ -1,16 +1,14 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
-	"os"
 	"strings"
 
+	"github.com/chzyer/readline"
 	"github.com/collinmcguire1/pokedex/internal/pokeapi"
 )
 
 type config struct {
-	commands         map[string]cliCommand
 	pokeapiClient    pokeapi.Client
 	nextLocationsURL *string
 	prevLocationsURL *string
@@ -18,29 +16,23 @@ type config struct {
 }
 
 func startRepl(cfg *config) {
-	info, err := os.Stdin.Stat()
+	rl, err := readline.New("Pokedex > ")
 	if err != nil {
-		fmt.Println("Error checking stdin:", err)
+		fmt.Println("Error initializing readline:", err)
 		return
 	}
-	piped := info.Mode()&os.ModeCharDevice == 0
+	defer rl.Close()
 
-	scanner := bufio.NewScanner(os.Stdin)
-	fmt.Println("Type exit to quit!")
+	fmt.Println("Welcome to the Pokedex!")
+	fmt.Println("Type 'help' for a list of (case insensitive) commands.")
+	fmt.Println("Type 'exit' to quit!\n")
 
 	for {
-		fmt.Print("Pokedex > ")
-
-		if !scanner.Scan() {
-			if err := scanner.Err(); err != nil {
-				fmt.Println("Error reading input:", err)
-			}
+		input, err := rl.Readline()
+		if err != nil {
 			return
 		}
-		input := scanner.Text()
-		if piped {
-			fmt.Println(input)
-		}
+
 		words := cleanInput(input)
 		if len(words) == 0 {
 			fmt.Println("Oops! An empty string was input. Try typing something before hitting 'enter' to avoid running into a panic crash in a less fool-proof program!")
@@ -51,7 +43,7 @@ func startRepl(cfg *config) {
 		if len(words) > 1 {
 			args = words[1:]
 		}
-		command, exists := cfg.commands[commandName]
+		command, exists := getCommands()[commandName]
 		if exists {
 			err := command.callback(cfg, args...)
 			if err != nil {
@@ -80,6 +72,7 @@ type cliCommand struct {
 }
 
 func getCommands() map[string]cliCommand {
+	//in command_help.go, you can add more functions to this list to get an updated print of available commands
 	mapCommandf := cliCommand{
 		name:        "map, mapf, mapforward",
 		description: "Show the name of 20 areas. Each subsequent call of 'map' goes to the next 20.",
@@ -111,18 +104,23 @@ func getCommands() map[string]cliCommand {
 
 		"explore": {
 			name:        "explore <location_name>",
-			description: "Show what pokemon are found in an input location",
+			description: "Show what pokemon are found in an input <location_written_in_snake_case>",
 			callback:    commandExplore,
 		},
 		"catch": {
 			name:        "catch <pokemon>",
-			description: "Try to catch a pokemon",
+			description: "Try to catch a pokemon named <pokemon>",
 			callback:    commandCatch,
 		},
 		"inspect": {
 			name:        "inspect <pokemon>",
-			description: "Show stats about a pokemon in your pokedex",
+			description: "Show stats about a <pokemon> in your pokedex",
 			callback:    commandInspect,
+		},
+		"pokedex": {
+			name:        "pokedex",
+			description: "See all of the pokemon that you've caught",
+			callback:    commandPokedex,
 		},
 	}
 }
