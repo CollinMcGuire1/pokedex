@@ -65,6 +65,13 @@ func cleanInput(text string) []string {
 	return words
 }
 
+func capitalize(s string) string {
+	if s == "" {
+		return s
+	}
+	return strings.ToUpper(s[:1]) + s[1:]
+}
+
 type cliCommand struct {
 	name        string
 	description string
