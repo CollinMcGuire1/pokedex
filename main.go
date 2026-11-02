@@ -18,7 +18,9 @@ package main
 //			save pokedex to disk so that a user can keep progress between sessions
 //			add party system and exp to level up, evolve
 //			improve map/mapb to allow 'left' 'right' etc.
-//			different types of catching balls
+//			different types of catching balls (great ball, ultra ball, etc)
+
+//			package the program so that it can be used outside of a terminal and on different OS's.
 
 import (
 	"time"
