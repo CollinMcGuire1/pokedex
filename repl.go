@@ -25,7 +25,8 @@ func startRepl(cfg *config) {
 
 	fmt.Println("Welcome to the Pokedex!")
 	fmt.Println("Type 'help' for a list of (case insensitive) commands.")
-	fmt.Println("Type 'exit' to quit!\n")
+	fmt.Println("Type 'exit' to quit!")
+	fmt.Println()
 
 	for {
 		input, err := rl.Readline()
